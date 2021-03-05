@@ -1,0 +1,58 @@
+.result {
+  margin: 1em 0;
+  padding: 1em;
+  border: 1px solid #555;
+  min-height: 40vh;
+  border-radius: 0.5em;
+}
+
+.result ul {
+  list-style-type: none;
+  border: 1px solid #eee;
+}
+
+.result ul li {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+}
+
+.result ul li {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em;
+  background-color: #eee;
+}
+
+.result ul > li + li {
+  margin-top: 0.25em;
+}
+
+.result ul li:nth-child(2n) {
+  background-color: #ccc;
+}
+
+.result ul li:hover {
+  background-color: rgb(200, 233, 253);
+}
+
+.result ul li > img + dl {
+  margin: auto 0 auto 1.5em;
+}
+
+dl {
+  width: 100%;
+}
+
+dt, dd {
+  display: inline-block;
+  margin-bottom: 0.5em;
+}
+
+dt {
+  width: 20%;
+}
+
+dd {
+  width: 80%;
+}
