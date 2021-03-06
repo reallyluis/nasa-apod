@@ -11,7 +11,11 @@
   padding: 0 0.5em;
 }
 
-.search-fields {
+.search-fields > * + * {
+  margin-top: 1em;
+}
+
+.search-fields-row {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -19,11 +23,15 @@
   flex-wrap: nowrap;
 }
 
-.search-fields > * {
-  flex: 0 1 30%;
+.search-fields-row > * {
+  flex: 0 1 20%;
   text-align: center;
 }
 
 .delay-label {
   cursor: help;
+}
+
+input:disabled {
+  cursor: not-allowed;
 }

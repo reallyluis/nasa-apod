@@ -1,8 +1,7 @@
 import { useState, createContext, useContext, useEffect, ReactNode } from 'react';
-import { PictureOfTheDay } from '../helpers';
+import { dateformat, PictureOfTheDay } from '../helpers';
 
-const dateformat = require('dateformat');
-let delayTimeOut = setTimeout(() => {}, 0);
+let delayTimeOut: ReturnType<typeof setTimeout>;
 
 const useSearch = (initial: PictureOfTheDay[]) => {
   const now = new Date();
@@ -17,6 +16,7 @@ const useSearch = (initial: PictureOfTheDay[]) => {
   const [delay, setDelay] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
   const [showMore, setShowMore] = useState('');
+  const [favsOnly, setFavsOnly] = useState(false);
 
   const fetchData = ({start, end}: {start:string, end:string}) => {
     fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.REACT_APP_NASA_API_KEY}&start_date=${start}&end_date=${end}`)
@@ -82,11 +82,12 @@ const useSearch = (initial: PictureOfTheDay[]) => {
     errorMsg,
     showMore,
     setShowMore,
-  }
+    favsOnly,
+    toggleFavsOnly: () => setFavsOnly(favsOnly => !favsOnly),
+  };
 };
-type SearchType = ReturnType<typeof useSearch>;
 
-const SearchContext = createContext<SearchType | null>(null);
+const SearchContext = createContext<ReturnType<typeof useSearch> | null>(null);
 
 export const useSearchContext = () => useContext(SearchContext)!;
 
@@ -94,4 +95,4 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => (
   <SearchContext.Provider value={useSearch([])}>
     {children}
   </SearchContext.Provider>
-)
+);
