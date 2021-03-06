@@ -1,23 +1,8 @@
 import { useState, createContext, useContext, useEffect, ReactNode } from 'react';
+import { PictureOfTheDay } from '../helpers';
 
 const dateformat = require('dateformat');
-
-export interface PictureOfTheDay {
-  copyright: string;
-  date: string;
-  explanation: string;
-  hdurl: string;
-  media_type: string;
-  service_version: string;
-  title: string;
-  url: string;
-};
-
-export interface ErrorResponse {
-  code: number;
-  msg: string;
-  service_version: string;
-};
+let delayTimeOut = setTimeout(() => {}, 0);
 
 const useSearch = (initial: PictureOfTheDay[]) => {
   const now = new Date();
@@ -26,26 +11,77 @@ const useSearch = (initial: PictureOfTheDay[]) => {
     end: dateformat(now, 'isoDate'),
   };
 
+  const [isLoading, setIsLoading] = useState(true);
   const [pictures, setPictures] = useState<PictureOfTheDay[]>(initial);
   const [daterange, setDateRange] = useState(range);
-  const [error, setError] = useState<ErrorResponse | null>(null);
+  const [delay, setDelay] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showMore, setShowMore] = useState('');
+
+  const fetchData = ({start, end}: {start:string, end:string}) => {
+    fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.REACT_APP_NASA_API_KEY}&start_date=${start}&end_date=${end}`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong.  Please try another date range.');
+        }
+      })
+      .then((data) => {
+        const processedData = Array.isArray(data)
+          ? data.filter((d:PictureOfTheDay) => d.media_type === 'image')
+          : [];
+
+        setPictures(processedData);
+        if (processedData.length === 0) {
+          setErrorMsg('No data found.  Please try another date range.');
+        } else {
+          setErrorMsg('');
+        }
+
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setErrorMsg(err.message);
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
-    fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.REACT_APP_NASA_API_KEY}&start_date=${daterange.start}&end_date=${daterange.end}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        setPictures(data.filter((d:PictureOfTheDay) => d.media_type === 'image'));
-      })
-      .catch((err) => setError(err));
-  }, [daterange]);
+    setIsLoading(true);
+
+    if (delayTimeOut) {
+      clearTimeout(delayTimeOut);
+    }
+
+    delayTimeOut = setTimeout(() => {
+      fetchData(daterange);
+    }, delay*1000);
+
+  }, [daterange, delay]);
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+
+    if (showMore === '') {
+      body?.classList.remove('no-scroll');
+    } else {
+      body?.classList.add('no-scroll');
+    }
+  }, [showMore]);
 
   return {
+    isLoading,
     pictures,
     setPictures,
     startDate: daterange.start,
     endDate: daterange.end,
     setDateRange,
-    error,
+    delay,
+    setDelay,
+    errorMsg,
+    showMore,
+    setShowMore,
   }
 };
 type SearchType = ReturnType<typeof useSearch>;

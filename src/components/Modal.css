@@ -1,0 +1,31 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  background-color: rgba(50, 50, 50, 0.6);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin: 3em;
+  padding: 3em 2em;
+  height: 80vh;
+  background-color: rgba(250, 250, 250, 1);
+  overflow-y: auto;
+  cursor: pointer;
+}
+
+.modal-content img {
+  margin: 0;
+  width: 50%;
+  height: fit-content;
+}
+
+.modal-content p {
+  margin: 0;
+  padding: 0 1em;
+}

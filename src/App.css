@@ -1,4 +1,46 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .App {
   margin: 1em auto;
+  min-width: 600px;
   max-width: 800px;
+}
+
+.loading {
+  position: relative;
+  background: white;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.spinner {
+  margin: 10% auto;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  border: 1em solid #eee;
+  border-top: 1em solid #ccc;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation:
+    spin 0.75s linear infinite,
+    fadeIn 1.5s ease normal;
 }
